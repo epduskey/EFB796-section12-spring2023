@@ -1,7 +1,7 @@
 # Lecture 7 - Bioenergetics and Individual Growth
 
 # Created: 4 Mar 2023
-# Last modified: 4 Mar 2023 by EPD
+# Last modified: 7 Mar 2023 by EPD
 
 # Install and load packages
 library(ggplot2)
@@ -14,6 +14,7 @@ setwd("/Users/epdus/OneDrive/Breathless/Teaching/EFB796")
 # Contents (ctrl-f):
 # I. Load and plot data
 # II. Bootstrap resampling
+# III. Gompertz using JAGS
 
 
 ########## I. Load and plot data ##########
@@ -69,6 +70,9 @@ p = ggplot(leaf.early, aes(x=Day, y=LeafArea)) +
   xlab("Day") + 
   ylab("Leaf area")
 
+# See plot
+p
+
 # Number of bootstrap samples
 nboot = 1000
 npreds = 100
@@ -80,7 +84,7 @@ x.new = seq_range(leaf.early$Day, n = npreds)
 for(i in 1:nboot) {
   
   # Resample data indices with replacement
-  inds = sample(seq(nrow(leaf.early)), replace = T)
+  inds = sample(seq(nrow(leaf.early)), size = nrow(leaf.early), replace = T)
   
   # Access resampled data rows
   tempdat = leaf[inds,]
@@ -119,6 +123,8 @@ p = ggplot(leaf.late, aes(x=Day, y=LeafArea)) +
         panel.border = element_rect(colour="black",fill=NA,linewidth=2)) +
   xlab("Day") + 
   ylab("Leaf area")
+
+# See plot
 p
 
 # Write JAGS model
