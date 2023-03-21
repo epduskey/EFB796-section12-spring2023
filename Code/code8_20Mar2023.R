@@ -69,7 +69,7 @@ branch = function(par, offspring, nreps, N, err = T) {
   # Survival probability is first element of par
   s = expit(par[1])
   
-  # All other elements are probabilities of produces 0 - length(par)-1 offspring
+  # All other elements are probabilities of producing a given # of offspring
   probs = expit(par[-1])
   
   # Initialize vector for number at each generation
@@ -200,30 +200,40 @@ M_mort = c(0.45, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3)
 N_vpa = vector(mode = "numeric", length = length(ages))
 names(N_vpa) = ages
 H_vpa = N_vpa
+H_vpa
+N_vpa
 
-# Final harvest mortality
+# Final harvest mortality.  This is just a guess!  In practice, you might try a bunch
+# of different values and see how this affects your estimates.
 FA = 0.2
 
-# First step with John Gulland's method
+# First step with John Gulland's (1965) method.  Here, we are calculating the 
+# number (N) at age a as a function of the last catch value (the "last" function
+# gives you the last value in a vector).
 ZA = FA + last(M_mort)							
 N_vpa[length(N_vpa)] = last(catch) / ((FA/ZA)*(1-exp(-ZA)))
 H_vpa[length(H_vpa)] = FA
 
 # Function to try different harvest mortalities
-ftry = function(par,M,catch,N) {
+# par: harvest mortality
+# M: natural mortality (usually assumed to be 0.2)
+# catch: observed catch
+# N: either observation or estimate for population size
+# returns the squared error in catch/N relative to the VPA estimate
+ftry = function(par, M, catch, N) {
   (catch/N - (par/(par+M))*(exp(par+M)-1))^2
 }
 
 # Loop through John Gulland's method
 for(i in (length(N_vpa)-1):1) {
   
-  # Estimate harvest mortality
+  # Estimate harvest mortality using our ftry function
   H_vpa[i] = optim(par = 0.2, 
                   fn = ftry, 
                   M = M_mort[i], catch = catch[i], N = N_vpa[i+1], 
                   method = "Brent", lower = 0, upper = 1)$par
   
-  # Estimate number in current year
+  # Estimate number in current year as a function of catch and harvest mortality
   Z_temp = H_vpa[i] + M_mort[i]
   N_vpa[i] = catch[i] / ((H_vpa[i]/(Z_temp))*(1-exp(-Z_temp)))
 }
