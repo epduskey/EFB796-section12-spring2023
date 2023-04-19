@@ -14,9 +14,7 @@ the text, or by selection "download."  This will depend on the file type.
 This repository will be updated as the course progresses, so keep
 checking back for updates.  We will try our best to upload lectures and
 code right after each class.  On occassion, we will also upload bonus code in
-the Bonus folder.  This code will run models and discuss topics
-that are only briefly mentioned in class, and is meant only as a 
-resource.  If you have any questions about the bonus code or the topics
+the Bonus folder.  If you have any questions about the bonus code or the topics
 therein, feel free to send us an email or drop by office hours.
 
 Looking forward to a great semester!
